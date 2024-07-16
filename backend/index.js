@@ -30,6 +30,7 @@ app.get("/scrape", (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching data:", error.Error);
+    res.json({ error: error.Error });
   }
 });
 

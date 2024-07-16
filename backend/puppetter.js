@@ -1,23 +1,29 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+const puppeteer = require("puppeteer-core");
+const chromium = require("chrome-aws-lambda");
+
 puppeteer.use(StealthPlugin());
 
+let browser;
 async function scrapeLeetCodeProblem(url) {
   try {
     const browser = await puppeteer.launch({ headless: false }); // Set headless to true
-    const page = await browser.newPage();
 
     // Capture console messages from the page
+    const page = await browser.newPage();
     page.on("console", (msg) => {
       for (let i = 0; i < msg.args().length; ++i)
         console.log(`${i}: ${msg.args()[i]}`);
     });
-
     await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
 
     // Custom delay function
-    // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    // await delay(5000); // Wait for an additional 5 seconds
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    await delay(5000); // Wait for an additional 5 seconds
+
+    // Wait for the element containing the description to be present
+    await page.waitForSelector(".elfjS", { timeout: 60000 });
 
     // Wait for the selector to be present on the page
     await page.waitForSelector(".text-title-large a", { timeout: 60000 });
@@ -37,9 +43,10 @@ async function scrapeLeetCodeProblem(url) {
         console.log("Description element not found");
         return null;
       }
-      const description = descElement.innerText;
+      // const description = descElement.innerText;
+      const description = descElement.innerHTML; // Extract inner HTML content
       console.log("Title:", title);
-      return { Title: title, Description: description };
+      return description
     });
 
     console.log("Scraped Data:", data);
@@ -50,6 +57,10 @@ async function scrapeLeetCodeProblem(url) {
   } catch (error) {
     console.error("Error fetching data:", error);
   }
+  finally {
+    if (browser) {
+      await browser.close();
+    }
 }
 
 module.exports = scrapeLeetCodeProblem;
