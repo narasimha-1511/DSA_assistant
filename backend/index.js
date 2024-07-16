@@ -2,9 +2,12 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const scrapeLeetCodeProblem = require("./puppeteer");
+const v1 = require("./v1");
 
 const app = express();
 require("dotenv").config();
+
+app.use("/api", v1);
 
 const corsOptions = {
   origin: function (origin, callback) {
