@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
-import "./css/chatbox.css";
+import "./css/chatbot.css";
+import getResponse, { continueChat } from "../utils/api";
+import extractQuestionName from "../utils/extractQuestion";
 import ValidateUrl from "../utils/validateUrl";
 
 const ChatBox = () => {
@@ -23,7 +25,12 @@ const ChatBox = () => {
       }
       addMessage(userInput);
       addUserMessageToHistory("", userInput, true);
-      //here we need to contiue the chat of the user
+      continueChat(userInput, history).then((data) => {
+        addBotMessageToHistory(data);
+        addMessage(data, true);
+        animation.current.style.display = "none";
+        return;
+      });
 
       setUserInput("");
     } else {
