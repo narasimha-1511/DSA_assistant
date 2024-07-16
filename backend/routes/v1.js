@@ -1,11 +1,14 @@
 const express = require("express");
 
-const { customResponse } = require("./../gemini/getCustomResponse");
+const { preprompt } = require("../controllers/prepromt");
+const { customDoubt } = require("../controllers/customDoubt");
 const { continuee } = require("../controllers/continue");
 
 const router = express.Router();
 
 router.post("/custom", customDoubt);
+
+router.post("/preprompt", preprompt);
 
 router.post("/continue", continuee);
 
