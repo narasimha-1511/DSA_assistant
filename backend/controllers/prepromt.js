@@ -1,4 +1,4 @@
-const { getPrePromtedResponse } = require("../gemini/getPrePromptResponse");
+const { getPrePromtedResponse } = require("../gemini/generatePrepeomts");
 const preprompt = (req, res) => {
   const { url, history, doubt } = req.body;
 

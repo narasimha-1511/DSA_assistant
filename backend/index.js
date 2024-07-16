@@ -1,8 +1,7 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const scrapeLeetCodeProblem = require("./puppeteer");
-const v1 = require("./v1");
+const v1 = require("./routes/v1");
 
 const app = express();
 require("dotenv").config();
@@ -21,21 +20,6 @@ const corsOptions = {
 
 app.use(express.json());
 app.use(cors(corsOptions));
-
-app.get("/scrape", (req, res) => {
-  try {
-    console.log("Scraping data... dfsdfds");
-    scrapeLeetCodeProblem(
-      "https://leetcode.com/problems/two-sum/description/"
-    ).then((data) => {
-      console.log("Data:", data);
-      res.json(data);
-    });
-  } catch (error) {
-    console.error("Error fetching data:", error.Error);
-    res.json({ error: error.Error });
-  }
-});
 
 
 
